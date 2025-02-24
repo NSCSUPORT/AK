@@ -97,27 +97,33 @@
             this.stack = [];
         }
 
+        // Adiciona um elemento à pilha
         push(element) {
             this.stack.push(element);
             this.optimize();
         }
 
+        // Remove o último elemento
         pop() {
             return this.stack.pop();
         }
 
+        // Retorna o topo da pilha sem removê-lo
         peek() {
             return this.stack[this.stack.length - 1];
         }
 
+        // Verifica se a pilha está vazia
         isEmpty() {
             return this.stack.length === 0;
         }
 
+        // Retorna a pilha como uma cópia
         getStack() {
             return [...this.stack];
         }
 
+        // Organiza e otimiza a pilha
         optimize() {
             if (typeof this.stack[0] === 'string') {
                 this.stack.sort((a, b) => a.localeCompare(b));
@@ -126,10 +132,12 @@
             }
         }
 
+        // Converte a pilha em uma árvore binária balanceada
         toBinaryTree() {
             return this.createBinaryTree(this.stack);
         }
 
+        // Cria a árvore binária a partir de um array ordenado
         createBinaryTree(sortedArray) {
             if (sortedArray.length === 0) return null;
 
@@ -141,8 +149,17 @@
             };
         }
 
+        // Exporta a pilha como um arquivo JSON otimizado
         exportAsJson() {
             return JSON.stringify(this.toBinaryTree(), null, 2);
+        }
+
+        // Método para processar a mensagem com a palavra "agradeço"
+        processMessage(msg) {
+            if (msg.includes('agradeço')) {
+                return 'Mensagem agradecida!';
+            }
+            return 'Mensagem normal.';
         }
     }
 
@@ -165,7 +182,7 @@
             }
 
             akiles = new AkilesStack();
-            parsedData.forEach(element => akiles.push(element));
+            parsedData.forEach(element => akiles.push(element));  // Adiciona os elementos à pilha
             processTree();
         } catch (error) {
             alert("Error processing the code. Ensure it is a valid array.");
@@ -186,18 +203,10 @@
         link.click();
     }
 
-    // Example usage for testing purposes
-    akiles.push(10);
-    akiles.push(5);
-    akiles.push(15);
-    akiles.push(2);
-    akiles.push(7);
-    akiles.push("apple");
-    akiles.push("banana");
-    akiles.push("grape");
-    akiles.push("orange");
-    console.log("📌 Optimized Stack:", akiles.getStack());
-    console.log("🌳 Binary Tree Structure:", JSON.stringify(akiles.toBinaryTree(), null, 2));
+    // Exemplo de uso do método processMessage
+    const testMessage = "Muito obrigado, agradeço pela ajuda!";
+    const response = akiles.processMessage(testMessage);
+    console.log(response);  // Saída: "Mensagem agradecida!"
 </script>
 
 </body>
