@@ -92,41 +92,33 @@
 </div>
 
 <script>
-    // Akiles Stack class definition
     class AkilesStack {
         constructor() {
             this.stack = [];
         }
 
-        // Adds an element to the stack
         push(element) {
             this.stack.push(element);
             this.optimize();
         }
 
-        // Removes the last element
         pop() {
             return this.stack.pop();
         }
 
-        // Returns the top element without removing
         peek() {
             return this.stack[this.stack.length - 1];
         }
 
-        // Checks if the stack is empty
         isEmpty() {
             return this.stack.length === 0;
         }
 
-        // Returns the stack as an array
         getStack() {
             return [...this.stack];
         }
 
-        // Organizes and optimizes the stack
         optimize() {
-            // If the stack contains strings, sort alphabetically; otherwise, sort numerically
             if (typeof this.stack[0] === 'string') {
                 this.stack.sort((a, b) => a.localeCompare(b));
             } else {
@@ -134,12 +126,10 @@
             }
         }
 
-        // Converts the stack into a balanced binary tree
         toBinaryTree() {
             return this.createBinaryTree(this.stack);
         }
 
-        // Helper method to create a binary tree from a sorted array
         createBinaryTree(sortedArray) {
             if (sortedArray.length === 0) return null;
 
@@ -151,7 +141,6 @@
             };
         }
 
-        // Exports the data as optimized JSON
         exportAsJson() {
             return JSON.stringify(this.toBinaryTree(), null, 2);
         }
@@ -168,17 +157,15 @@
         }
 
         try {
-            // Try parsing the code as an array
             const parsedData = JSON.parse(code);
-            
-            // Check if it's an array
+
             if (!Array.isArray(parsedData)) {
                 alert("Please enter a valid array.");
                 return;
             }
 
             akiles = new AkilesStack();
-            parsedData.forEach(element => akiles.push(element)); // Push elements to Akiles stack
+            parsedData.forEach(element => akiles.push(element));
             processTree();
         } catch (error) {
             alert("Error processing the code. Ensure it is a valid array.");
@@ -211,7 +198,6 @@
     akiles.push("orange");
     console.log("📌 Optimized Stack:", akiles.getStack());
     console.log("🌳 Binary Tree Structure:", JSON.stringify(akiles.toBinaryTree(), null, 2));
-
 </script>
 
 </body>
