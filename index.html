@@ -55,6 +55,17 @@
         .file-uploads, .actions {
             margin: 20px 0;
         }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -68,10 +79,9 @@
         <option value="swift">Swift</option>
     </select>
 
-    <div class="file-uploads">
-        <input type="file" id="uploadFile" accept=".js">
-        <button onclick="uploadFile()">Upload .js</button>
-    </div>
+    <h3>Enter Stack Code:</h3>
+    <textarea id="stackCode" placeholder="Enter an array of stack elements here, e.g., [10, 5, 15]"></textarea>
+    <button onclick="processCode()">Process Stack Code</button>
 
     <div class="actions">
         <button onclick="downloadFile()">Download Optimized Stack</button>
@@ -147,35 +157,37 @@
         }
     }
 
-    let stackData = [];
     let akiles = new AkilesStack();
 
-    function processStack() {
-        let binaryTree = akiles.toBinaryTree();
-        document.getElementById("output").textContent = JSON.stringify(binaryTree, null, 2);
-    }
+    function processCode() {
+        const code = document.getElementById("stackCode").value;
 
-    function uploadFile() {
-        let fileInput = document.getElementById("uploadFile");
-        let file = fileInput.files[0];
-
-        if (!file) {
-            alert("Please select a file.");
+        if (!code) {
+            alert("Please enter JavaScript code.");
             return;
         }
 
-        let reader = new FileReader();
-        reader.onload = function (event) {
-            try {
-                stackData = eval(event.target.result); // Assume the file has JavaScript code defining the stack
-                akiles = new AkilesStack();
-                stackData.forEach(element => akiles.push(element)); // Push elements to Akiles stack
-                processStack();
-            } catch (error) {
-                alert("Error processing the file.");
+        try {
+            // Try parsing the code as an array
+            const parsedData = JSON.parse(code);
+            
+            // Check if it's an array
+            if (!Array.isArray(parsedData)) {
+                alert("Please enter a valid array.");
+                return;
             }
-        };
-        reader.readAsText(file);
+
+            akiles = new AkilesStack();
+            parsedData.forEach(element => akiles.push(element)); // Push elements to Akiles stack
+            processTree();
+        } catch (error) {
+            alert("Error processing the code. Ensure it is a valid array.");
+        }
+    }
+
+    function processTree() {
+        let binaryTree = akiles.toBinaryTree();
+        document.getElementById("output").textContent = JSON.stringify(binaryTree, null, 2);
     }
 
     function downloadFile() {
