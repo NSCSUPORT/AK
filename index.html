@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akiles Stack Manager</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: #1E1E1E;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+
+        button, select, input {
+            padding: 10px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        button:hover {
+            background-color: #388E3C;
+        }
+
+        input {
+            background-color: #333;
+            color: white;
+        }
+
+        pre {
+            text-align: left;
+            background: #222;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+
+        .file-uploads, .actions {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Akiles Stack Manager</h1>
+    
+    <label for="language">Choose Language:</label>
+    <select id="language">
+        <option value="js">JavaScript</option>
+        <option value="swift">Swift</option>
+    </select>
+
+    <div class="file-uploads">
+        <input type="file" id="uploadFile" accept=".js">
+        <button onclick="uploadFile()">Upload .js</button>
+    </div>
+
+    <div class="actions">
+        <button onclick="downloadFile()">Download Optimized Stack</button>
+    </div>
+
+    <h3>Processed Stack (Tree Structure):</h3>
+    <pre id="output"></pre>
+</div>
+
+<script>
+    // Akiles Stack class definition
+    class AkilesStack {
+        constructor() {
+            this.stack = [];
+        }
+
+        // Adds an element to the stack
+        push(element) {
+            this.stack.push(element);
+            this.optimize();
+        }
+
+        // Removes the last element
+        pop() {
+            return this.stack.pop();
+        }
+
+        // Returns the top element without removing
+        peek() {
+            return this.stack[this.stack.length - 1];
+        }
+
+        // Checks if the stack is empty
+        isEmpty() {
+            return this.stack.length === 0;
+        }
+
+        // Returns the stack as an array
+        getStack() {
+            return [...this.stack];
+        }
+
+        // Organizes and optimizes the stack
+        optimize() {
+            // If the stack contains strings, sort alphabetically; otherwise, sort numerically
+            if (typeof this.stack[0] === 'string') {
+                this.stack.sort((a, b) => a.localeCompare(b));
+            } else {
+                this.stack.sort((a, b) => a - b);
+            }
+        }
+
+        // Converts the stack into a balanced binary tree
+        toBinaryTree() {
+            return this.createBinaryTree(this.stack);
+        }
+
+        // Helper method to create a binary tree from a sorted array
+        createBinaryTree(sortedArray) {
+            if (sortedArray.length === 0) return null;
+
+            let mid = Math.floor(sortedArray.length / 2);
+            return {
+                value: sortedArray[mid],
+                left: this.createBinaryTree(sortedArray.slice(0, mid)),
+                right: this.createBinaryTree(sortedArray.slice(mid + 1))
+            };
+        }
+
+        // Exports the data as optimized JSON
+        exportAsJson() {
+            return JSON.stringify(this.toBinaryTree(), null, 2);
+        }
+    }
+
+    let stackData = [];
+    let akiles = new AkilesStack();
+
+    function processStack() {
+        let binaryTree = akiles.toBinaryTree();
+        document.getElementById("output").textContent = JSON.stringify(binaryTree, null, 2);
+    }
+
+    function uploadFile() {
+        let fileInput = document.getElementById("uploadFile");
+        let file = fileInput.files[0];
+
+        if (!file) {
+            alert("Please select a file.");
+            return;
+        }
+
+        let reader = new FileReader();
+        reader.onload = function (event) {
+            try {
+                stackData = eval(event.target.result); // Assume the file has JavaScript code defining the stack
+                akiles = new AkilesStack();
+                stackData.forEach(element => akiles.push(element)); // Push elements to Akiles stack
+                processStack();
+            } catch (error) {
+                alert("Error processing the file.");
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    function downloadFile() {
+        const binaryTreeJson = akiles.exportAsJson();
+        const blob = new Blob([binaryTreeJson], { type: "application/json" });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = "optimized_stack.json";
+        link.click();
+    }
+
+    // Example usage for testing purposes
+    akiles.push(10);
+    akiles.push(5);
+    akiles.push(15);
+    akiles.push(2);
+    akiles.push(7);
+    akiles.push("apple");
+    akiles.push("banana");
+    akiles.push("grape");
+    akiles.push("orange");
+    console.log("📌 Optimized Stack:", akiles.getStack());
+    console.log("🌳 Binary Tree Structure:", JSON.stringify(akiles.toBinaryTree(), null, 2));
+
+</script>
+
+</body>
+</html>
